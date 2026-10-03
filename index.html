@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카페 아늑 (Cafe Aneuk) - 메뉴 카탈로그</title>
+  <!-- 깔끔한 한글 폰트(Pretendard) 불러오기 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  
+  <style>
+    /* ===================================================
+       1. 기본 스타일 초기화 & 기본 설정
+       =================================================== */
+    * {
+      box-margin: 0;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box; /* 패딩이나 테두리가 너비 계산에 포함되도록 설정 */
+    }
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #fcf9f5; /* 눈이 편안한 따뜻한 아이보리 배경색 */
+      color: #333333;           /* 기본 글자색 (진한 회색) */
+      line-height: 1.6;
+    }
+
+    /* 화면 중앙 정렬 및 최대 너비 제한 컨테이너 */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===================================================
+       2. 상단 네비게이션 헤더 (Header)
+       =================================================== */
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #eee5dc;
+      padding: 18px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100; /* 스크롤 내려도 항상 맨 위에 보이도록 고정 */
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between; /* 로고는 왼쪽, 안내글은 오른쪽 배치 */
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #6d4c41; /* 부드러운 브라운 톤 */
+      text-decoration: none;
+    }
+
+    .nav-info {
+      font-size: 0.9rem;
+      color: #8d7b73;
+    }
+
+    /* ===================================================
+       3. 히어로 섹션 (Hero: 첫인상 배너)
+       =================================================== */
+    .hero {
+      text-align: center;
+      padding: 50px 20px 40px;
+      background: linear-gradient(180deg, #f7efe7 0%, #fcf9f5 100%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background-color: #e8d7c8;
+      color: #5c3c28;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      color: #3c2a21;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      color: #665a48;
+      font-size: 1.05rem;
+    }
+
+    /* ===================================================
+       4. 필터 태그 버튼들 (카테고리 선택)
+       =================================================== */
+    .filter-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px 0 40px;
+      flex-wrap: wrap; /* 모바일에서 넘치면 다음 줄로 */
+    }
+
+    .filter-btn {
+      border: 1px solid #d8cbbf;
+      background-color: #ffffff;
+      color: #5c4e46;
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease; /* 마우스 올렸을 때 부드러운 전환 효과 */
+    }
+
+    /* 활성화된 버튼 및 마우스 호버 효과 */
+    .filter-btn:hover,
+    .filter-btn.active {
+      background-color: #6d4c41;
+      color: #ffffff;
+      border-color: #6d4c41;
+    }
+
+    /* ===================================================
+       5. 상품 카드 그리드 레이아웃 (Grid)
+       =================================================== */
+    .menu-grid {
+      display: grid;
+      /* 화면 크기에 맞춰 반응형으로 열 개수 자동 조절 (최소 240px) */
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px; /* 카드 사이 간격 */
+      margin-bottom: 60px;
+    }
+
+    /* 개별 카드 스타일 */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden; /* 모서리 둥글게 할 때 이미지가 삐져나가지 않도록 */
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05); /* 은은한 그림자 */
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #f1ebe5;
+    }
+
+    /* 마우스를 카드 위에 올렸을 때 살짝 위로 뜨는 효과 */
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(92, 60, 40, 0.12);
+    }
+
+    /* 카드 이미지 영역 */
+    .card-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 이미지 비율을 유지하면서 박스 채우기 */
+      transition: transform 0.3s ease;
+    }
+
+    /* 마우스 올리면 사진이 살짝 줌인 */
+    .card:hover .card-img-wrap img {
+      transform: scale(1.05);
+    }
+
+    /* 카드 위 배지(BEST, NEW 등) */
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background-color: rgba(60, 42, 33, 0.85);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .badge-best { background-color: #d9534f; } /* 인기 메뉴는 빨간 톤 */
+    .badge-new { background-color: #2e7d32; }  /* 신메뉴는 초록 톤 */
+
+    /* 카드 본문 텍스트 영역 */
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1; /* 카드 높이를 일정하게 맞춰줌 */
+    }
+
+    .menu-name-ko {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2b1f1a;
+      margin-bottom: 2px;
+    }
+
+    .menu-name-en {
+      font-size: 0.8rem;
+      color: #9c8a80;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .menu-desc {
+      font-size: 0.88rem;
+      color: #6e645e;
+      margin-bottom: 18px;
+      flex-grow: 1; /* 설명이 짧아도 가격 부분이 바닥에 붙도록 함 */
+      line-height: 1.45;
+    }
+
+    /* 카드 하단 가격 및 버튼 */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px dashed #eee5dc;
+    }
+
+    .menu-price {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #5c3c28;
+    }
+
+    .order-btn {
+      background-color: #f7efe7;
+      color: #5c3c28;
+      border: 1px solid #dfcfc0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .order-btn:hover {
+      background-color: #6d4c41;
+      color: #ffffff;
+      border-color: #6d4c41;
+    }
+
+    /* ===================================================
+       6. 하단 푸터 (Footer)
+       =================================================== */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #8c7d75;
+      font-size: 0.85rem;
+      border-top: 1px solid #ebdcd0;
+      background-color: #f9f5f0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 상단 헤더 -->
+  <header>
+    <div class="container nav-content">
+      <a href="#" class="logo">☕ 카페 아늑 (Aneuk)</a>
+      <span class="nav-info">매일 10:00 - 21:00 오픈</span>
+    </div>
+  </header>
+
+  <!-- 2. 첫인상 배너 (히어로 섹션) -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-badge">Specialty Coffee & Bakery</span>
+      <h1>오늘 당신의 하루를 채워줄 달콤한 한 잔</h1>
+      <p>신선한 원두와 매일 아침 구워내는 수제 디저트를 만나보세요.</p>
+
+      <!-- 카테고리 필터 버튼들 -->
+      <div class="filter-group">
+        <button class="filter-btn active">전체 보기</button>
+        <button class="filter-btn">시그니처 커피</button>
+        <button class="filter-btn">논커피 & 티</button>
+        <button class="filter-btn">수제 베이커리</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 메뉴 카탈로그 그리드 (상품 카드 4개) -->
+  <main class="container">
+    <div class="menu-grid">
+
+      <!-- 상품 카드 1: 시그니처 크림 라떼 -->
+      <article class="card">
+        <div class="card-img-wrap">
+          <span class="card-badge badge-best">인기 BEST</span>
+          <!-- Unsplash 무료 고화질 커피 이미지 -->
+          <img src="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=600&auto=format&fit=crop&q=80" alt="아늑 크림 라떼">
+        </div>
+        <div class="card-body">
+          <h2 class="menu-name-ko">아늑 시그니처 크림라떼</h2>
+          <p class="menu-name-en">Signature Cream Latte</p>
+          <p class="menu-desc">고소한 수제 생크림과 진한 에스프레소가 어우러진 카페 아늑의 대표 시그니처 메뉴입니다.</p>
+          <div class="card-footer">
+            <span class="menu-price">6,500원</span>
+            <button class="order-btn">상세보기</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 상품 카드 2: 제주 말차 아인슈페너 -->
+      <article class="card">
+        <div class="card-img-wrap">
+          <span class="card-badge badge-new">신메뉴 NEW</span>
+          <img src="https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=600&auto=format&fit=crop&q=80" alt="제주 말차 아인슈페너">
+        </div>
+        <div class="card-body">
+          <h2 class="menu-name-ko">제주 유기농 말차 슈페너</h2>
+          <p class="menu-name-en">Jeju Matcha Einspanner</p>
+          <p class="menu-desc">쌉싸름한 100% 제주 유기농 말차 위에 부드럽고 달콤한 동물성 생크림을 듬뿍 얹었습니다.</p>
+          <div class="card-footer">
+            <span class="menu-price">6,800원</span>
+            <button class="order-btn">상세보기</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 상품 카드 3: 바질 토마토 에이드 -->
+      <article class="card">
+        <div class="card-img-wrap">
+          <span class="card-badge">시즌 한정</span>
+          <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80" alt="바질 토마토 에이드">
+        </div>
+        <div class="card-body">
+          <h2 class="menu-name-ko">바질 토마토 에이드</h2>
+          <p class="menu-name-en">Basil Tomato Ade</p>
+          <p class="menu-desc">직접 담근 꿀토마토 청과 향긋한 생바질 잎을 넣어 톡 쏘는 청량감이 가득한 음료입니다.</p>
+          <div class="card-footer">
+            <span class="menu-price">6,000원</span>
+            <button class="order-btn">상세보기</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 상품 카드 4: 프랑스 버터 크로플 -->
+      <article class="card">
+        <div class="card-img-wrap">
+          <span class="card-badge badge-best">디저트 1위</span>
+          <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&auto=format&fit=crop&q=80" alt="브라운치즈 크로플">
+        </div>
+        <div class="card-body">
+          <h2 class="menu-name-ko">브라운치즈 크로플</h2>
+          <p class="menu-name-en">Brown Cheese Croffle</p>
+          <p class="menu-desc">프랑스산 최고급 버터 크루아상 생지를 바삭하게 구워, 바닐라 젤라또와 짭짤한 브라운치즈를 갈아 올렸습니다.</p>
+          <div class="card-footer">
+            <span class="menu-price">8,500원</span>
+            <button class="order-btn">상세보기</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- 4. 하단 푸터 -->
+  <footer>
+    <div class="container">
+      <p>📍 서울시 성동구 성수이로 123 카페 아늑 | 📞 02-1234-5678</p>
+      <p style="margin-top: 6px; color: #a89a91;">© 2026 Cafe Aneuk. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
